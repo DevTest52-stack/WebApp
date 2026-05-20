@@ -10,7 +10,7 @@ app.use(express.json());
 
 app.post('/',(req,res)=>{
     console.log(req)
-    console.log(req.body)
+    //console.log(req.body)
     // const {data}=req.body;
     // console.log(data);
     // arr.push(data);  

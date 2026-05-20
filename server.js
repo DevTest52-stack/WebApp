@@ -7,13 +7,14 @@ const port = 3000
 const arr=[];
 
 // app.use(express.json());
+app.use(express.static(path.join(__dirname, "dist")));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.text({ type: '*/*' })); 
 
-app.post('/',(req,res)=>{
+app.post('/api/',(req,res)=>{
     // console.log(req)
     console.log(req.body)
     const raw_data=req.body;
-
     if(raw_data==null){
         return res.send("body not found")
     }
@@ -25,13 +26,17 @@ app.post('/',(req,res)=>{
         "amb":arrData[3],
         "volt":arrData[4]
     }
-    console.log("received")
+    console.log("received:",data)
     // const {data}=req.body;
     // console.log(data);
     arr.push(data);  
     return res.send("Got a post response data:")
-    //res.send(`Got a post response data: ${data}`);
 })
+
+//frontend Static page
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
 
 const server = http.createServer(app);
 

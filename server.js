@@ -6,11 +6,12 @@ const port = 3000
 
 const arr=[];
 
-app.use(express.json());
+// app.use(express.json());
+app.use(express.text({ type: '*/*' })); 
 
 app.post('/',(req,res)=>{
     console.log(req)
-    //console.log(req.body)
+    console.log(req.body)
     // const {data}=req.body;
     // console.log(data);
     // arr.push(data);  

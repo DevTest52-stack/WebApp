@@ -3,6 +3,7 @@ const express = require('express')
 const http = require('http')
 const app = express()
 const port = 3000
+const path = require("path");
 
 const arr=[];
 
@@ -10,6 +11,11 @@ const arr=[];
 app.use(express.static(path.join(__dirname, "dist")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.text({ type: '*/*' })); 
+
+//frontend Static page
+app.get("/*path", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
 
 app.post('/api/',(req,res)=>{
     // console.log(req)
@@ -32,11 +38,6 @@ app.post('/api/',(req,res)=>{
     arr.push(data);  
     return res.send("Got a post response data:")
 })
-
-//frontend Static page
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "dist", "index.html"));
-});
 
 const server = http.createServer(app);
 

@@ -11,8 +11,8 @@ app.use(express.text({ type: '*/*' }));
 
 app.post('/',(req,res)=>{
     // console.log(req)
-    //console.log(req.body)
-    const {data}=req.body;
+    console.log(req.body)
+    // const {data}=req.body;
     // console.log(data);
     // arr.push(data);  
     res.send("Got a post response data:")

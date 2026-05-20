@@ -11,8 +11,12 @@ app.use(express.text({ type: '*/*' }));
 
 app.post('/',(req,res)=>{
     // console.log(req)
-    // console.log(req.body)
-    const {raw_data}=req.body;
+    console.log(req.body)
+    const raw_data=req.body;
+
+    if(raw_data==null){
+        return res.send("body not found")
+    }
     const arrData=raw_data.split(";");
     const data={
         "id":arrData[0],
@@ -25,7 +29,7 @@ app.post('/',(req,res)=>{
     // const {data}=req.body;
     // console.log(data);
     arr.push(data);  
-    res.send("Got a post response data:")
+    return res.send("Got a post response data:")
     //res.send(`Got a post response data: ${data}`);
 })
 

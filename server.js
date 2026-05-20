@@ -11,10 +11,20 @@ app.use(express.text({ type: '*/*' }));
 
 app.post('/',(req,res)=>{
     // console.log(req)
-    console.log(req.body)
+    // console.log(req.body)
+    const {raw_data}=req.body;
+    const arrData=raw_data.split(";");
+    const data={
+        "id":arrData[0],
+        "temp":arrData[1],
+        "hum":arrData[2],
+        "amb":arrData[3],
+        "volt":arrData[4]
+    }
+    console.log("received")
     // const {data}=req.body;
     // console.log(data);
-    // arr.push(data);  
+    arr.push(data);  
     res.send("Got a post response data:")
     //res.send(`Got a post response data: ${data}`);
 })

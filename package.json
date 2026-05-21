@@ -11,8 +11,9 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
-    "express": "^5.2.1",
+    "express": "^4.22.2",
     "nodemon": "^3.1.14",
+    "socket.io": "^4.8.3",
     "ws": "^8.20.1"
   }
 }

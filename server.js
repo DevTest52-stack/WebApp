@@ -1,20 +1,29 @@
-const WebSocket = require('ws')
-const express = require('express')
-const http = require('http')
-const app = express()
+const express = require('express');
+const { createServer } = require('node:http');
+const { join } = require('node:path');
+const { Server } = require('socket.io');
+
+const app = express();
+const server = createServer(app);
+const io = new Server(server);
+
 const port = 3000
 const path = require("path");
-
-const arr=[];
 
 // app.use(express.json());
 app.use(express.static(path.join(__dirname, "dist")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.text({ type: '*/*' })); 
 
+const arr=[];
+
 //frontend Static page
 app.get("/*path", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
 });
 
 app.post('/api/',(req,res)=>{
@@ -25,66 +34,25 @@ app.post('/api/',(req,res)=>{
         return res.send("body not found")
     }
     const arrData=raw_data.split(";");
+    arrData.push(Date.now());
     const data={
         "id":arrData[0],
         "temp":arrData[1],
         "hum":arrData[2],
         "amb":arrData[3],
-        "volt":arrData[4]
+        "volt":arrData[4],
+        "timeStamp":arrData[5]
     }
     console.log("received:",data)
     // const {data}=req.body;
     // console.log(data);
     arr.push(data);  
+    
+    io.emit('sensor-data',data);
+
     return res.send("Got a post response data:")
 })
 
-const server = http.createServer(app);
-
-const wss = new WebSocket.Server({ server });
-
-// wss.on('connection', ws => {
-//     console.log('Client connected');
-
-//     // Handle messages from the client (e.g., from the Qt app)
-//     ws.on('message', message => {
-//         let messageData=message.toString();
-//         let messageDataParts=messageData.split(",")
-//         let timeStamp=messageDataParts[0]
-//         let lat=messageDataParts[1]
-//         let lng=messageDataParts[2]
-//         //console.log(`Received message: ${message}`);
-//         console.log(`${lat},${lng},${Date(timeStamp)}`)
-
-//         // Send a response back to the client
-//         ws.send(`${message}`);
-//         //send to all clients 
-//         wss.clients.forEach(client => {
-//             if (client !== ws && client.readyState === WebSocket.OPEN) {
-//                 client.send(`${message}`);
-//             }
-//         });
-//     });
-
-//     ws.on('close', () => {
-//         console.log('Client disconnected');
-//     });
-
-//     // Send data periodically to simulate location updates
-//     // const interval = setInterval(() => {
-//     //     // const latitude = Math.random() * 180 - 90;
-//     //     // const longitude = Math.random() * 360 - 180;
-//     //     lat=parseFloat(lat+0.0001)
-//     //     lng=parseFloat(lng+0.0001)
-//     //     const data = `${lat.toFixed(4)},${lng.toFixed(4)}`;
-//     //     ws.send(data);
-//     // }, 2000);
-
-//     ws.on('close', () => {
-//         //clearInterval(interval); // Stop sending data when client disconnects
-//         console.log('socket closed')
-//     });
-// });
 
 server.listen(port, ()=>{
     console.log(`Server running on Port:${port}`);

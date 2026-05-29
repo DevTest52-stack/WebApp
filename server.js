@@ -10,12 +10,12 @@ const io = new Server(server);
 const port = 3000
 const path = require("path");
 
-// app.use(express.json());
+// app.use(express.json());  cant use express.json because req.body is strictly a string rather than an object
 app.use(express.static(path.join(__dirname, "dist")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.text({ type: '*/*' })); 
 
-const arr=[];
+// const arr=[];
 
 //frontend Static page
 app.get("/*path", (req, res) => {
@@ -27,32 +27,37 @@ io.on('connection', (socket) => {
 });
 
 app.post('/api/',(req,res)=>{
-    // console.log(req)
-    console.log(req.body)
-    const raw_data=req.body;
-    if(raw_data==null){
-        return res.send("body not found")
-    }
-    const arrData=raw_data.split(";");
-    arrData.push(Date.now());
-    const data={
-        "id":arrData[0],
-        "temp":arrData[1],
-        "hum":arrData[2],
-        "amb":arrData[3],
-        "volt":arrData[4],
-        "timeStamp":arrData[5]
-    }
-    console.log("received:",data)
-    // const {data}=req.body;
-    // console.log(data);
-    arr.push(data);  
-    
-    io.emit('sensor-data',data);
+    try{
+        const raw_data = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+        if (!raw_data) {
+            return res.status(400).send("Body not found");
+        }
+        // const raw_data=req.body;
+        // if(raw_data==null){
+        //     return res.send("body not found")
+        // }
+        const arrData=raw_data.split(";");
 
-    return res.send("Got a post response data:")
+        if (arrData.length < 5) {
+            return res.status(400).send("Invalid body data format");
+        }
+        const data={
+            "id":arrData[0],
+            "temp":arrData[1],
+            "hum":arrData[2],
+            "amb":arrData[3],
+            "volt":arrData[4],
+            "timeStamp":Date.now()
+        }
+        console.log("received:",data)
+
+        io.emit('sensor-data',data);
+        return res.send("Got a post response")
+    }catch(err){
+        console.log("Server error",err);
+        res.status(500).send("Internal Server Error")
+    }
 })
-
 
 server.listen(port, ()=>{
     console.log(`Server running on Port:${port}`);

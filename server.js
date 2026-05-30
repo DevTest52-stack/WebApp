@@ -13,7 +13,7 @@ const path = require("path");
 // app.use(express.json());  cant use express.json because req.body is strictly a string rather than an object
 app.use(express.static(path.join(__dirname, "dist")));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.text({ type: '*/*' })); 
+app.use(express.text({ type: '*/*' ,limit: '5kb'})); 
 
 // const arr=[];
 
@@ -28,14 +28,11 @@ io.on('connection', (socket) => {
 
 app.post('/api/',(req,res)=>{
     try{
-        const raw_data = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
-        if (!raw_data) {
+        if(typeof req.body !== 'string' || !req.body.trim()){
             return res.status(400).send("Body not found");
         }
-        // const raw_data=req.body;
-        // if(raw_data==null){
-        //     return res.send("body not found")
-        // }
+        const raw_data = req.body.trim();
+      
         const arrData=raw_data.split(";");
 
         if (arrData.length < 5) {

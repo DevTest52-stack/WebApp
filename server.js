@@ -11,12 +11,12 @@ const server = createServer(app);
 const io = new Server(server);
 
 //Use For development
-const io = new Server(server,{
-  cors: {
-    origin: "*", // Allows connections from any origin
-    methods: ["GET", "POST"]
-  }
-});
+// const io = new Server(server,{
+//   cors: {
+//     origin: "*", // Allows connections from any origin
+//     methods: ["GET", "POST"]
+//   }
+// });
 
 const port = 3000
 const path = require("path");
@@ -29,7 +29,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.text({ type: '*/*' ,limit: '5kb'})); 
 
 //Use For development
-app.use(cors())
+//app.use(cors())
 
 //Db
 db.exec(`

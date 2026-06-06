@@ -13,7 +13,7 @@ const io = new Server(server);
 //Use For development
 const io = new Server(server,{
   cors: {
-    origin: "http://localhost:5173", // Allows connections from any origin
+    origin: "*", // Allows connections from any origin
     methods: ["GET", "POST"]
   }
 });

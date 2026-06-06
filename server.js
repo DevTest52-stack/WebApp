@@ -7,12 +7,16 @@ const {DatabaseSync} = require('node:sqlite');
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server,{
-  cors: {
-    origin: "*", // Allows connections from any origin
-    methods: ["GET", "POST"]
-  }
-});
+
+const io = new Server(server);
+
+//Use For development
+// const io = new Server(server,{
+//   cors: {
+//     origin: "*", // Allows connections from any origin
+//     methods: ["GET", "POST"]
+//   }
+// });
 
 const port = 3000
 const path = require("path");
@@ -23,7 +27,9 @@ const db = new DatabaseSync("db.sql");
 app.use(express.static(path.join(__dirname, "dist")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.text({ type: '*/*' ,limit: '5kb'})); 
-app.use(cors())
+
+//Use For development
+// app.use(cors())
 
 //Db
 db.exec(`

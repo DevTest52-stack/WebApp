@@ -94,6 +94,7 @@ app.post('/api/',(req,res)=>{
         //console.log("received:",data)
 
         io.emit('sensor-data',data);
+        console.log("POST request : data received")
         return res.send("Got a post response")
     }catch(err){
         console.log("Server error",err);
@@ -130,7 +131,7 @@ app.get('/api/metrics', (req,res) => {
 
     // Fetch all elements within constraints
     const data = query.all(startTimeStr, endTimeStr);
-
+    console.log("GET request : metrics data send")
     return res.json({
       success:true,
       count: data.length,
@@ -169,6 +170,7 @@ app.get('/api/single',(req,res)=>{
         "kwatt":data.kwatt,
         "timeStamp":data.timestamp
       }
+      console.log("GET request : single data send")
     return res.json({
       success:true,data:dataPack
     })
